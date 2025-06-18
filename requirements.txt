@@ -7,3 +7,8 @@ langchain_groq             # Integrates GROQ features with LangChain
 transformers               # to calculate get_token_ids.
 scholarly
 autogen
+pandas                     # Data manipulation and analysis
+plotly                     # Interactive data visualization
+fastapi                    # Modern, fast web framework for building APIs
+uvicorn[standard]          # ASGI server for running FastAPI applications
+pydantic                   # Data validation using Python type annotations
