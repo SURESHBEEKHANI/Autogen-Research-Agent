@@ -8,6 +8,11 @@ from schema.data_validation import PaperSummary, ResearchQuery, ResearchResponse
 from src.agents import ResearchAgents
 from src.data_loader import DataLoader
 import os
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/research", tags=["Research"])
 
@@ -15,6 +20,7 @@ router = APIRouter(prefix="/research", tags=["Research"])
 def get_api_key():
     groq_api_key = os.getenv("GROQ_API_KEY")
     if not groq_api_key:
+        logger.error("GROQ_API_KEY is not configured")
         raise HTTPException(
             status_code=500,
             detail="GROQ_API_KEY is not configured. Please set it in your environment variables."
@@ -23,11 +29,25 @@ def get_api_key():
 
 # Dependency to get initialized agents
 def get_agents(api_key: str = Depends(get_api_key)):
-    return ResearchAgents(api_key)
+    try:
+        return ResearchAgents(api_key)
+    except Exception as e:
+        logger.error(f"Failed to initialize ResearchAgents: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to initialize AI agents: {str(e)}"
+        )
 
 # Dependency to get data loader
 def get_data_loader():
-    return DataLoader()
+    try:
+        return DataLoader()
+    except Exception as e:
+        logger.error(f"Failed to initialize DataLoader: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to initialize data loader: {str(e)}"
+        )
 
 @router.post("/", response_model=ResearchResponse)
 async def research_papers(
@@ -43,42 +63,73 @@ async def research_papers(
     - **num_results**: Number of results to return per source
     """
     try:
+        logger.info(f"Processing research query: {query.query} from sources: {query.sources}")
+        
         all_papers = []
         
         # Fetch from selected sources
         if "ArXiv" in query.sources:
-            arxiv_papers = data_loader.fetch_arxiv_papers(query.query, limit=query.num_results)
-            all_papers.extend(arxiv_papers)
+            try:
+                logger.info("Fetching papers from ArXiv...")
+                arxiv_papers = data_loader.fetch_arxiv_papers(query.query, limit=query.num_results)
+                logger.info(f"Found {len(arxiv_papers)} papers from ArXiv")
+                all_papers.extend(arxiv_papers)
+            except Exception as e:
+                logger.error(f"Error fetching from ArXiv: {e}")
+                # Continue with other sources instead of failing completely
             
         if "Google Scholar" in query.sources:
-            google_scholar_papers = data_loader.fetch_google_scholar_papers(query.query)
-            all_papers.extend(google_scholar_papers[:query.num_results])
+            try:
+                logger.info("Fetching papers from Google Scholar...")
+                google_scholar_papers = data_loader.fetch_google_scholar_papers(query.query)
+                logger.info(f"Found {len(google_scholar_papers)} papers from Google Scholar")
+                all_papers.extend(google_scholar_papers[:query.num_results])
+            except Exception as e:
+                logger.error(f"Error fetching from Google Scholar: {e}")
+                # Continue with other sources instead of failing completely
 
         if not all_papers:
+            logger.warning(f"No papers found for query: {query.query}")
             raise HTTPException(
                 status_code=404,
-                detail=f"No papers found for query: {query.query}"
+                detail=f"No papers found for query: {query.query}. Please try a different search term."
             )
 
         processed_papers = []
 
         # Process each paper: generate summary and analyze advantages/disadvantages
-        for paper in all_papers:
+        for i, paper in enumerate(all_papers):
             try:
-                summary = agents.summarize_paper(paper['summary'])
+                logger.info(f"Processing paper {i+1}/{len(all_papers)}: {paper.get('title', 'Unknown')[:50]}...")
+                
+                # Generate summary
+                summary = agents.summarize_paper(paper.get('summary', ''))
+                
+                # Analyze advantages/disadvantages
                 adv_dis = agents.analyze_advantages_disadvantages(summary)
 
                 processed_papers.append(PaperSummary(
-                    title=paper["title"],
-                    link=paper["link"],
+                    title=paper.get("title", "No title available"),
+                    link=paper.get("link", "No link available"),
                     summary=summary,
                     advantages_disadvantages=adv_dis
                 ))
+                
+                logger.info(f"Successfully processed paper {i+1}")
+                
             except Exception as e:
-                # Log error but continue processing other papers
-                print(f"Error processing paper {paper.get('title', 'Unknown')}: {str(e)}")
+                logger.error(f"Error processing paper {paper.get('title', 'Unknown')}: {str(e)}")
+                # Add a basic paper entry instead of skipping
+                processed_papers.append(PaperSummary(
+                    title=paper.get("title", "No title available"),
+                    link=paper.get("link", "No link available"),
+                    summary="Error processing this paper",
+                    advantages_disadvantages="Analysis failed for this paper"
+                ))
                 continue
 
+        logger.info(f"Successfully processed {len(processed_papers)} papers")
+        
         return ResearchResponse(
             papers=processed_papers,
             total_papers=len(processed_papers),
@@ -89,9 +140,10 @@ async def research_papers(
     except HTTPException:
         raise
     except Exception as e:
+        logger.error(f"Unexpected error in research_papers: {e}")
         raise HTTPException(
             status_code=500,
-            detail=f"An error occurred while processing the research query: {str(e)}"
+            detail=f"An unexpected error occurred while processing the research query: {str(e)}"
         )
 
 @router.get("/sources", response_model=dict)

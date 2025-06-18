@@ -30,14 +30,36 @@ class ResearchAgents:
 
     def summarize_paper(self, paper_summary):
         """Generates a summary of the research paper."""
-        summary_response = self.summarizer_agent.generate_reply(
-            messages=[{"role": "user", "content": f"Summarize this paper: {paper_summary}"}]
-        )
-        return summary_response.get("content", "Summarization failed!") if isinstance(summary_response, dict) else str(summary_response)
+        try:
+            if not paper_summary or paper_summary.strip() == "":
+                return "No summary available for this paper."
+                
+            summary_response = self.summarizer_agent.generate_reply(
+                messages=[{"role": "user", "content": f"Summarize this paper: {paper_summary}"}]
+            )
+            
+            if isinstance(summary_response, dict):
+                return summary_response.get("content", "Summarization failed!")
+            else:
+                return str(summary_response)
+        except Exception as e:
+            print(f"Error in summarize_paper: {e}")
+            return f"Error generating summary: {str(e)}"
 
     def analyze_advantages_disadvantages(self, summary):
         """Generates advantages and disadvantages of the research paper."""
-        adv_dis_response = self.advantages_disadvantages_agent.generate_reply(
-            messages=[{"role": "user", "content": f"Provide advantages and disadvantages for this paper: {summary}"}]
-        )
-        return adv_dis_response.get("content", "Advantages and disadvantages analysis failed!")
+        try:
+            if not summary or summary.strip() == "":
+                return "No analysis available for this paper."
+                
+            adv_dis_response = self.advantages_disadvantages_agent.generate_reply(
+                messages=[{"role": "user", "content": f"Provide advantages and disadvantages for this paper: {summary}"}]
+            )
+            
+            if isinstance(adv_dis_response, dict):
+                return adv_dis_response.get("content", "Advantages and disadvantages analysis failed!")
+            else:
+                return str(adv_dis_response)
+        except Exception as e:
+            print(f"Error in analyze_advantages_disadvantages: {e}")
+            return f"Error generating analysis: {str(e)}"
