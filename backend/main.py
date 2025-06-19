@@ -24,9 +24,13 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(info_router)
-app.include_router(health_router)
-app.include_router(research_router)
+app.include_router(info_router, prefix="/api")
+app.include_router(health_router, prefix="/api")
+app.include_router(research_router, prefix="/api")
+
+# Add aliases for /health and /research (without /api) for compatibility
+app.include_router(health_router, prefix="/health")
+app.include_router(research_router, prefix="/research")
 
 if __name__ == "__main__":
     """

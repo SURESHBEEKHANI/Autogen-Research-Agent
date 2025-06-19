@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Database, Settings } from 'lucide-react';
-import { ResearchQuery, AvailableSources } from '../types';
+import { ResearchQuery } from '../types';
 
 interface SearchFormProps {
   onSubmit: (query: ResearchQuery) => void;

@@ -2,35 +2,41 @@ version: '3.8'
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env
+    build: ./backend
     ports:
-      - "8000:8000"
+      - "8080:8080"
     volumes:
       - ./backend:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
-    networks:
-      - app-network
+    env_file:
+      - backend/.env
+    # Uncomment below if you want to see logs in the terminal
+    # command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8080"]
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
     ports:
-      - "3000:80"
-    depends_on:
-      - backend
-    networks:
-      - app-network
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      BACKEND_BASE_URL: "http://localhost:8080"
+      NEXTAUTH_SECRET: "atr5-gt65-9jet"
+      NEXTAUTH_URL: "http://localhost:3000/"
+      NEXT_PUBLIC_BASE_URL: "http://localhost:3000"
+      NODE_ENV: "development"
 
-networks:
-  app-network:
-    driver: bridge
-
-# Notes:
-# - Backend is accessible as 'backend:8000' from frontend (see vite.config.js proxy)
-# - Frontend is served on port 3000 (mapped to container's 80)
-# - You need Dockerfiles in both backend/ and frontend/ for this to work 
+# =========================
+# How to run this project:
+# =========================
+# 1. Build and start all services:
+#    docker-compose up --build
+#
+# 2. To stop the services:
+#    docker-compose down
+#
+# 3. To rebuild after code changes (if not using volumes):
+#    docker-compose up --build
+#
+# 4. Access frontend: http://localhost:3000
+#    Access backend:  http://localhost:8080

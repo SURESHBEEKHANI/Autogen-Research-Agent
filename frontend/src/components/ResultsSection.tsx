@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Search, TrendingUp } from 'lucide-react';
+import { BookOpen, Search } from 'lucide-react';
 import { ResearchResponse } from '../types';
 import PaperCard from './PaperCard';
 

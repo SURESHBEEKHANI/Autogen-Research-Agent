@@ -6,5 +6,4 @@ env/
 .venv/
 *.db
 .git/
-.env
 .DS_Store

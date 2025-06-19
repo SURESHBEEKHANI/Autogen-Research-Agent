@@ -50,6 +50,7 @@ def get_data_loader():
         )
 
 @router.post("/", response_model=ResearchResponse)
+@router.post("", response_model=ResearchResponse)
 async def research_papers(
     query: ResearchQuery,
     agents: ResearchAgents = Depends(get_agents),

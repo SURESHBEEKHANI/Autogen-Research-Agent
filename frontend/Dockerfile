@@ -1,17 +1,14 @@
-# Build stage
-FROM node:18 AS build
+FROM node:18-alpine
 
 WORKDIR /app
-COPY package.json package-lock.json ./
+
+# Install dependencies first for better caching
+COPY package*.json ./
 RUN npm install
+
+# Copy the rest of the application code
 COPY . .
-RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+EXPOSE 3000
 
-COPY --from=build /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "dev", "--", "--host"]

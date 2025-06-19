@@ -13,7 +13,7 @@ const api = axios.create({
 export const researchApi = {
   // Search and analyze research papers
   searchPapers: async (query: ResearchQuery): Promise<ResearchResponse> => {
-    const response = await api.post<ResearchResponse>('/research', query);
+    const response = await api.post<ResearchResponse>('/research/', query);
     return response.data;
   },
 

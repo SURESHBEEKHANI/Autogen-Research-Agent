@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, BookOpen, Search, Brain, Database, Shield } from 'lucide-react';
+import { Zap, Brain, Database, Search, Shield } from 'lucide-react';
 import { ApiInfo } from '../types';
 
 const AboutSection: React.FC = () => {

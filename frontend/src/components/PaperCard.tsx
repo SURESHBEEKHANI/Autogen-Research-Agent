@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExternalLink, ChevronDown, ChevronUp, FileText, TrendingUp, TrendingDown } from 'lucide-react';
+import { ExternalLink, ChevronDown, ChevronUp, FileText, TrendingUp } from 'lucide-react';
 import { PaperSummary } from '../types';
 
 interface PaperCardProps {

@@ -1,13 +1,12 @@
-langchain-community        # Extends LangChain with community-built tools
-langchain-core             # Core components for building LLM apps
-streamlit                  # Creates user-friendly web interfaces 
-langchain                  # Enables LLM-based workflows and integrations
-python-dotenv              # Manages environment variables securely
-langchain_groq             # Integrates GROQ features with LangChain
-transformers               # to calculate get_token_ids.
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+pandas
+langchain
+langchain-community
+langchain-core
+langchain_groq
+transformers
 scholarly
 autogen
-pandas                     # Data manipulation and analysis                  # Interactive data visualization
-fastapi                    # Modern, fast web framework for building APIs
-uvicorn[standard]          # ASGI server for running FastAPI applications
-pydantic                   # Data validation using Python type annotations
