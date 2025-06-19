@@ -1,284 +1,133 @@
-# Virtual Research Assistant
+# Autogen Research Agent
 
-A FastAPI-based research assistant that fetches and analyzes research papers from multiple sources using AI-powered summarization and analysis.
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/SURESHBEEKHANI/Autogen-Research-Agent.git)
 
-## 🚀 Features
+A full-stack, AI-powered research assistant for searching, summarizing, and analyzing academic papers from multiple sources. Combines a FastAPI backend with a modern React/TypeScript frontend for a seamless research experience.
 
-- **Multi-Source Research Retrieval**: Fetch papers from ArXiv and Google Scholar
-- **AI-Powered Analysis**: Generate summaries and analyze advantages/disadvantages using Groq LLM
-- **RESTful API**: Clean, documented API endpoints with automatic OpenAPI documentation
-- **Error Handling**: Comprehensive error handling and validation
-- **CORS Support**: Cross-origin resource sharing enabled for web applications
-- **Health Monitoring**: Built-in health check endpoints
-
-## 📋 Prerequisites
-
-- Python 3.8+
-- GROQ API key (get one at [https://console.groq.com/](https://console.groq.com/))
-
-## 🛠️ Installation
-
-1. **Clone the repository** (if not already done):
-```bash
-git clone <repository-url>
-cd Autogen-Research-Agent
-```
-
-2. **Install dependencies**:
-```bash
-pip install -r requirements.txt
-```
-
-3. **Set up environment variables**:
-Create a `.env` file in the root directory:
-```env
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-## 🚀 Running the FastAPI Server
-
-### Development Mode
-```bash
-python fastapi_app.py
-```
-
-### Production Mode (with uvicorn)
-```bash
-uvicorn fastapi_app:app --host 0.0.0.0 --port 8000 --reload
-```
-
-The server will start at `http://localhost:8000`
-
-## 📚 API Documentation
-
-### Interactive Documentation
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-### Available Endpoints
-
-#### 1. Health Check
-```http
-GET /api/health
-```
-Returns the health status of the API.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "Virtual Research Assistant API is running",
-  "version": "1.0.0"
-}
-```
-
-#### 2. Get Available Sources
-```http
-GET /api/sources
-```
-Returns list of available data sources.
-
-**Response:**
-```json
-{
-  "sources": [
-    {
-      "name": "ArXiv",
-      "description": "Open access repository for academic papers",
-      "url": "https://arxiv.org"
-    },
-    {
-      "name": "Google Scholar",
-      "description": "Academic search engine for scholarly literature",
-      "url": "https://scholar.google.com"
-    }
-  ]
-}
-```
-
-#### 3. Research Papers Search
-```http
-POST /api/research
-```
-
-**Request Body:**
-```json
-{
-  "query": "machine learning",
-  "sources": ["ArXiv", "Google Scholar"],
-  "num_results": 5
-}
-```
-
-**Response:**
-```json
-{
-  "query": "machine learning",
-  "papers": [
-    {
-      "title": "Paper Title",
-      "link": "https://arxiv.org/abs/...",
-      "summary": "AI-generated summary of the paper",
-      "advantages_disadvantages": "Analysis of pros and cons"
-    }
-  ],
-  "total_papers": 5,
-  "sources_used": ["ArXiv", "Google Scholar"]
-}
-```
-
-## 🧪 Testing the API
-
-### Using the Test Client
-```bash
-python test_fastapi_client.py
-```
-
-### Using curl
-```bash
-# Health check
-curl http://localhost:8000/api/health
-
-# Search for papers
-curl -X POST "http://localhost:8000/api/research" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "quantum computing",
-    "sources": ["ArXiv"],
-    "num_results": 3
-  }'
-```
-
-### Using Python requests
-```python
-import requests
-
-# Search for papers
-response = requests.post(
-    "http://localhost:8000/api/research",
-    json={
-        "query": "machine learning",
-        "sources": ["ArXiv"],
-        "num_results": 5
-    }
-)
-
-if response.status_code == 200:
-    data = response.json()
-    print(f"Found {data['total_papers']} papers")
-    for paper in data['papers']:
-        print(f"- {paper['title']}")
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-- `GROQ_API_KEY`: Your Groq API key (required)
-
-### API Configuration
-The API can be configured by modifying the following in `fastapi_app.py`:
-- CORS settings
-- Rate limiting
-- Request/response models
-- Error handling
+---
 
 ## 🏗️ Architecture
 
 ```
-fastapi_app.py          # Main FastAPI application
-├── src/
-│   ├── agents.py       # AI agents for summarization and analysis
-│   └── data_loader.py  # Data fetching from ArXiv and Google Scholar
-├── test_fastapi_client.py  # Test client for API
-└── requirements.txt    # Python dependencies
+[Frontend (React/TypeScript)] <----> [Backend (FastAPI, Python)] <----> [External APIs: ArXiv, Google Scholar, Groq]
 ```
+- **Frontend**: User interface for searching, viewing, and analyzing papers
+- **Backend**: Handles data retrieval, AI summarization, and API endpoints
 
-## 🔒 Security Considerations
+---
 
-- **API Key**: Store your GROQ_API_KEY in environment variables, never in code
-- **CORS**: Configure CORS settings properly for production
-- **Rate Limiting**: Consider adding rate limiting for production use
-- **Input Validation**: All inputs are validated using Pydantic models
+## 🚀 Features
 
-## 🚀 Deployment
+### Backend
+- Multi-source search: ArXiv & Google Scholar
+- AI-powered summarization and pros/cons analysis (Groq API)
+- RESTful API with automatic Swagger/ReDoc docs
+- Robust error handling and logging
+- Health/status endpoints
 
-### Docker Deployment
-```dockerfile
-FROM python:3.9-slim
+### Frontend
+- Smart search interface (source selection, result count, validation)
+- AI-generated summaries and analysis display
+- Card-based, expandable results with direct links
+- Modern, responsive UI (React, TypeScript, Tailwind CSS)
+- Fast performance (Vite), mobile-friendly
 
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+---
 
-COPY . .
-EXPOSE 8000
+## 🛠️ Tech Stack
+- **Backend**: FastAPI, Python 3.8+, Groq API, ArXiv API, Google Scholar
+- **Frontend**: React 18, TypeScript, Tailwind CSS, Vite, Axios
+- **Other**: Docker, MIT License
 
-CMD ["uvicorn", "fastapi_app:app", "--host", "0.0.0.0", "--port", "8000"]
-```
+---
 
-### Cloud Deployment
-The FastAPI app can be deployed to:
-- **Heroku**: Use the provided Dockerfile
-- **AWS Lambda**: Use Mangum adapter
-- **Google Cloud Run**: Use the provided Dockerfile
-- **Azure App Service**: Deploy as a web app
+## ⚡ Setup & Installation
 
-## 🐛 Troubleshooting
+### Backend
+1. Clone the repo and enter backend:
+   ```bash
+   git clone <repository-url>
+   cd Autogen-Research-Agent/backend
+   ```
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate  # Windows
+   # or
+   source .venv/bin/activate  # Linux/Mac
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Set up environment variables in `.env`:
+   ```env
+   GROQ_API_KEY=your_actual_groq_api_key_here
+   LOG_LEVEL=INFO
+   ```
+5. Run the backend:
+   ```bash
+   python main.py
+   # or for production
+   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+   ```
 
-### Common Issues
+### Frontend
+1. Enter frontend directory:
+   ```bash
+   cd ../frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the frontend:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:8000/docs) in your browser.
 
-1. **GROQ_API_KEY not found**
-   - Ensure `.env` file exists with your API key
-   - Check that `python-dotenv` is installed
+---
 
-2. **Import errors**
-   - Ensure all dependencies are installed: `pip install -r requirements.txt`
-   - Check Python version (3.8+ required)
+## 📦 Repository
 
-3. **No papers found**
-   - Check your internet connection
-   - Verify the search query is valid
-   - Some sources may have rate limits
+- **GitHub:** [https://github.com/SURESHBEEKHANI/Autogen-Research-Agent.git](https://github.com/SURESHBEEKHANI/Autogen-Research-Agent.git)
+- This is the official repository for the Autogen Research Agent project. Star or fork to contribute, report issues, or stay updated.
 
-4. **AI analysis fails**
-   - Verify your GROQ API key is valid
-   - Check your Groq account has sufficient credits
+---
 
-## 📝 API Response Codes
+## 📞 Usage
+- Search for papers by topic, select sources, and set result count
+- View AI-generated summaries and pros/cons for each paper
+- Click direct links to original papers
+- Use the API directly for programmatic access
 
-- `200`: Success
-- `400`: Bad Request (invalid parameters)
-- `404`: No papers found
-- `500`: Internal Server Error
+---
 
-## 🤝 Contributing
+## 📚 API Endpoints (Backend)
+- `POST /research/` — Search and analyze research papers
+- `GET /research/sources` — List available data sources
+- `GET /api-info` — API information
+- `GET /health` — Basic health check
+- `GET /health/status` — Detailed health status
+- Interactive docs: [Swagger UI](http://localhost:8000/docs), [ReDoc](http://localhost:8000/redoc)
 
+---
+
+## 🤝 Development & Contribution
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+3. Make your changes (add tests if possible)
+4. Submit a pull request
+
+---
 
 ## 📄 License
+MIT License — see LICENSE file for details.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆚 Comparison with Streamlit Version
-
-| Feature | Streamlit | FastAPI |
-|---------|-----------|---------|
-| Interface | Web UI | REST API |
-| Use Case | Interactive demo | Production API |
-| Documentation | Built-in UI | OpenAPI/Swagger |
-| Integration | Manual | Programmatic |
-| Scalability | Limited | High |
-| Deployment | Streamlit Cloud | Any platform |
+---
 
 ## 📞 Support
-
-For issues and questions:
-1. Check the troubleshooting section
-2. Review the API documentation at `/docs`
-3. Open an issue on GitHub 
-
-This is the README for the project root. 
+- Check troubleshooting in backend/frontend READMEs
+- Review API docs at `/docs`
+- Open an issue on GitHub
