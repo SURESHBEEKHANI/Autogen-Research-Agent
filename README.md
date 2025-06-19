@@ -1,4 +1,4 @@
-# Virtual Research Assistant - FastAPI Version
+# Virtual Research Assistant
 
 A FastAPI-based research assistant that fetches and analyzes research papers from multiple sources using AI-powered summarization and analysis.
 
@@ -280,3 +280,5 @@ For issues and questions:
 1. Check the troubleshooting section
 2. Review the API documentation at `/docs`
 3. Open an issue on GitHub 
+
+This is the README for the project root. 

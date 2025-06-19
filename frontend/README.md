@@ -126,3 +126,5 @@ The project uses:
 ## License
 
 This project is licensed under the MIT License.
+
+This is the README for the frontend folder.

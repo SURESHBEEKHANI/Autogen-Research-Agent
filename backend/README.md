@@ -142,4 +142,6 @@ backend/
 
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the MIT License.
+
+This is the README for the backend folder. 
