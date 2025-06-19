@@ -46,7 +46,7 @@ A full-stack, AI-powered research assistant for searching, summarizing, and anal
 ### Backend
 1. Clone the repo and enter backend:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/SURESHBEEKHANI/Autogen-Research-Agent.git
    cd Autogen-Research-Agent/backend
    ```
 2. Create and activate a virtual environment:
