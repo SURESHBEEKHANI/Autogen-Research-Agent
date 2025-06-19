@@ -20,6 +20,7 @@ WORKDIR /app
 
 # Install Python dependencies in a separate layer for better caching
 COPY requirements.txt ./
+COPY .env .env
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
